@@ -11,7 +11,14 @@ export default class DatabaseMemory {
     }
 
     read() {
-        return Array.from(this.#videos.values());
+        return Array.from(this.#videos.entries()).map((video) => {
+            const [id, data] = video;
+
+            return {
+                id,
+                ...data
+            };
+        });
     }
 
     update(id, video) {

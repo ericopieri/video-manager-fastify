@@ -8,23 +8,35 @@ const server = fastify();
 const database = new DatabaseMemory();
 
 server.post("/videos", (request, reply) => {
-    database.create({
-        title: "Video 01",
-        description: "Description 01",
-        duration: 3000
-    });
+    const { title, description, duration } = request.body;
 
-    console.log(database.read());
+    database.create({
+        title,
+        description,
+        duration
+    });
 
     return reply.status(201).send();
 });
 
 server.get("/videos", () => {
-    // GET request handler
+    const videos = database.read();
+
+    return videos;
 });
 
-server.put("/videos/:id", () => {
-    // PUT request handler
+server.put("/videos/:id", (request, reply) => {
+    const videoId = request.params.id;
+
+    const { title, description, duration } = request.body;
+
+    database.update(videoId, {
+        title,
+        description,
+        duration
+    });
+
+    return reply.status(204).send();
 });
 
 server.delete("/videos/:id", () => {

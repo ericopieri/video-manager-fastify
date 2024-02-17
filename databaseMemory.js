@@ -1,23 +1,26 @@
 import { randomUUID } from "node:crypto";
+import { sql } from "./pg-sql.js";
 
 
-export default class DatabaseMemory {
+export default class Database {
     #videos = new Map();
 
-    create(video) {
-        const id = randomUUID();
-
-        this.#videos.set(id, video);
+    async create(video) {
+        try {
+            await sql`
+                INSERT INTO videos (title, description, duration) VALUES (${video.title}, ${video.description}, ${video.duration})
+            `;
+        } catch (err) {
+            console.error(err);
+        }
     }
 
-    read(search) {
-        const videos = Array.from(this.#videos.entries()).map(([id, data]) => ({ id, ...data }));
-
+    async read(search) {
         if (search !== undefined) {
-            return videos.filter(video => video.title.includes(search));
+            return await sql`SELECT * FROM videos WHERE title ILIKE '%' || ${search} || '%'`;
         }
 
-        return videos;
+        return await sql`SELECT * FROM videos`;
     }
 
     update(id, video) {

@@ -3,8 +3,6 @@ import { sql } from "./pg-sql.js";
 
 
 export default class Database {
-    #videos = new Map();
-
     async create(video) {
         try {
             await sql`
@@ -23,11 +21,23 @@ export default class Database {
         return await sql`SELECT * FROM videos`;
     }
 
-    update(id, video) {
-        this.#videos.set(id, video);
+    async update(id, video) {
+        try {
+            await sql`
+                UPDATE videos
+                SET title = ${video.title}, description = ${video.description}, duration = ${video.duration}
+                WHERE id = ${id}
+            `;
+        } catch (err) {
+            console.error(err);
+        }
     }
 
-    delete(id) {
-        this.#videos.delete(id);
+    async delete(id) {
+        try {
+            await sql`DELETE FROM videos WHERE id = ${id}`;
+        } catch (err) {
+            console.error(err);
+        }
     }
 }

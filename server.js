@@ -49,9 +49,13 @@ server.delete("/videos/:id", async (request, reply) => {
     return reply.status(204).send();
 });
 
-server.listen({ port: process.env.PORT ?? 3000 }, (err, address) => {
-    if (err) {
-        console.error(err);
-        exit(1);
-    }
+server.listen({
+        port: process.env.PORT ?? 3000,
+        host: '0.0.0.0'
+    },
+    (err, address) => {
+        if (err) {
+            console.error(err);
+            exit(1);
+        }
 });

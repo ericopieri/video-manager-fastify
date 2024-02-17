@@ -20,7 +20,9 @@ server.post("/videos", (request, reply) => {
 });
 
 server.get("/videos", () => {
-    const videos = database.read();
+    const search = request.query.search;
+
+    const videos = database.read(search);
 
     return videos;
 });

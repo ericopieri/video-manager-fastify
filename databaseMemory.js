@@ -10,15 +10,14 @@ export default class DatabaseMemory {
         this.#videos.set(id, video);
     }
 
-    read() {
-        return Array.from(this.#videos.entries()).map((video) => {
-            const [id, data] = video;
+    read(search) {
+        const videos = Array.from(this.#videos.entries()).map(([id, data]) => ({ id, ...data }));
 
-            return {
-                id,
-                ...data
-            };
-        });
+        if (search !== undefined) {
+            return videos.filter(video => video.title.includes(search));
+        }
+
+        return videos;
     }
 
     update(id, video) {
